@@ -7,6 +7,6 @@ ENV project=devops
 WORKDIR /var/www/
 COPY index.html /usr/local/apache
 EXPOSE 80
-CMD [ "* /usr/sbin/httpd","-D","FOREGROUND" ]
+CMD [ "/usr/sbin/httpd" , "-D" , "FOREGROUND" ]
 
  
