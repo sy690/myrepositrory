@@ -1,6 +1,6 @@
 #start of file creation
 #Start with a base image
-FROM Alpine:latest
+FROM alpine:latest
 RUN apk  update && apk add --no-cache apache
 ADD org.apache.catalina.authenticator.jaspic /opt
 ENV project=devops
