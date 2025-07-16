@@ -11,7 +11,7 @@
 # CMD [ "/usr/sbin/httpd" , "-D" , "FOREGROUND" ]
 
 FROM ubuntu:latest
-RUN apk update && apt install -y apache2
+RUN apt update && apt install -y apache2
 COPY index.html /var/www/html/
 ENV My-Project=devops
 EXPOSE 80
