@@ -38,40 +38,18 @@
 # EXPOSE 3000
 # CMD ["npm", "start"]
 # # 
- version: '3.8'
+# 
 
-services:
-  web:
-    image: nginx:alpine
-    ports:
-      - "8080:80"
-    depends_on:
-      - app
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+# Stage 1: Build the React/Angular app
+FROM node:18-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
 
-  app:
-    image: node:alpine
-    working_dir: /app
-    volumes:
-      - ./api:/app
-    command: sh -c "npm install && node app.js"
-    depends_on:
-      - db
-    ports:
-      - "3000:3000"  # Optional, for debugging or API testing
-
-  db:
-    image: mysql:5.7
-    environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: sample_db
-      MYSQL_USER: app_user
-      MYSQL_PASSWORD: app_password
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-
-volumes:
-  mysql_data:
+# Stage 2: Serve with Nginx
+FROM nginx:alpine
+COPY --from=builder /app/build /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
