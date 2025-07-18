@@ -41,15 +41,17 @@
 # 
 
 # Stage 1: Build the React/Angular app
-FROM node:18-alpine AS builder
+# 
+# Stage 1: Build with Maven
+FROM maven:3.9.0-eclipse-temurin-17 AS builder
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-# Stage 2: Serve with Nginx
-FROM nginx:alpine
-COPY --from=builder /app/build /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Stage 2: Run the app
+FROM eclipse-temurin:17-jdk-alpine
+WORKDIR /app
+COPY --from=builder /app/target/myapp.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
