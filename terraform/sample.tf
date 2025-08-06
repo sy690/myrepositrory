@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket = "terraform-bucket-1231234"
-    key = "state/taxdocument.pdf"
+    key = "state/tarraform.tfstate"
     region = "us-east-1"
   }
 }
